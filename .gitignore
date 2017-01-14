@@ -1,0 +1,4 @@
+config/index.js
+node_modules/
+*.swp
+*.map
