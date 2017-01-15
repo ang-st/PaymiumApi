@@ -30,16 +30,8 @@ Paymium.prototype.publicRequest = function(endpoint ) {
   var self = this
   ///var method = method || 'GET'
   return  rp({ uri:BASEURL+endpoint, json:true})
-    .then((res => {
-          
-      return Promise.resolve(res)
-
-    }))
-    .catch((err => {
-    
-      return Promise.reject(err)
-    
-    }))
+    .then((res => { return Promise.resolve(res) }))
+    .catch((err => { return Promise.reject(err) }))
   
 }
 
@@ -64,6 +56,36 @@ Paymium.prototype.privateRequest = function (method, endpoint, params){
     .catch((err => { return Promise.reject(err) }))
 
 }
+
+Paymium.prototype.getPrivateRequest = function (endpoint, params) {
+  return this.privateRequest("GET", endpoint, params)
+
+}
+
+Paymium.prototype.postPrivateRequest = function (endpoint, params) {
+  return this.privateRequest("POST", endpoint, params)
+
+}
+Paymium.prototype.Ticker = function() {
+  return this.publicRequest('data/eur/ticker')
+}
+
+Paymium.prototype.lastTrades = function() {
+  return this.publicRequest("data/eur/trades")
+
+}
+
+Paymium.prototype.orderBook = function() {
+  return this.publicRequest("data/eur/depth")
+
+}
+
+Paymium.prototype.accountHistory = function (options) {
+  var opts = options || {}
+  return this.getPrivateRequest( "user/orders", opts ) 
+
+}
+
 
 
 module.exports = Paymium
