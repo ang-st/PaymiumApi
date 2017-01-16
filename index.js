@@ -18,8 +18,9 @@ function Paymium(apiKey, apiSecret){
 // encoded using your API secret key,
 Paymium.prototype.sign = function(url, body) {
   var nonce = new Date().getTime().toString()
-  var post  = querystring.stringify(body)
-  //console.log(nonce)
+  var post  = JSON.stringify(body)
+  //var post  = querystring.stringify(body)
+  console.log(post)
   var payload = nonce+url+post
   var hmac = crypto.createHmac('sha256',this.apiSecret )  
   return { nonce : nonce, hmac : hmac.update(payload).digest("hex") }
@@ -30,8 +31,10 @@ Paymium.prototype.publicRequest = function(endpoint ) {
   var self = this
   ///var method = method || 'GET'
   return  rp({ uri:BASEURL+endpoint, json:true})
-    .then((res => { return Promise.resolve(res) }))
-    .catch((err => { return Promise.reject(err) }))
+    .then((res => { 
+      return Promise.resolve(res) }))
+    .catch((err => { 
+      return Promise.reject(err) }))
   
 }
 
@@ -42,6 +45,7 @@ Paymium.prototype.privateRequest = function (method, endpoint, params){
   var request =  {
     method: method,
     uri: BASEURL+endpoint,
+    body: params,
     headers : {
       'Api-Key': this.apiKey,
       'Api-Signature': sig.hmac,
@@ -52,8 +56,12 @@ Paymium.prototype.privateRequest = function (method, endpoint, params){
   }
  // console.log( request) 
   return rp(request)
-    .then((res => { return Promise.resolve(res) }))
-    .catch((err => { return Promise.reject(err) }))
+    .then((res => { 
+      
+      return Promise.resolve(res) }))
+    .catch((err => { 
+      
+      return Promise.reject(err) }))
 
 }
 
@@ -86,6 +94,25 @@ Paymium.prototype.accountHistory = function (options) {
 
 }
 
+Paymium.prototype.marketBuyEurBased =  function (options){
+
+  var amount_eur = options.amount_eur
+  var order = { type:'MarketOrder', currency :"EUR", direction: "buy", currency_amount: amount_eur }
+
+
+  return this.postPrivateRequest("user/orders", order)
+
+}
+
+Paymium.prototype.marketSellBtcBased =  function (options){
+
+  var amount_btc = options.amount_btc
+  var order = { type:'MarketOrder', currency :"EUR", direction: "sell", amount: amount_btc }
+
+
+  return this.postPrivateRequest("user/orders", order)
+
+}
 
 
 module.exports = Paymium
