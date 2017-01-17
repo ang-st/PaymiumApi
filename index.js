@@ -18,9 +18,9 @@ function Paymium(apiKey, apiSecret){
 // encoded using your API secret key,
 Paymium.prototype.sign = function(url, body) {
   var nonce = new Date().getTime().toString()
-  var post  = JSON.stringify(body)
+  var post  = JSON.stringify(body) || ''
   //var post  = querystring.stringify(body)
-  console.log(post)
+ // console.log(post)
   var payload = nonce+url+post
   var hmac = crypto.createHmac('sha256',this.apiSecret )  
   return { nonce : nonce, hmac : hmac.update(payload).digest("hex") }
@@ -114,5 +114,45 @@ Paymium.prototype.marketSellBtcBased =  function (options){
 
 }
 
+Paymium.prototype.getOrderStatus = function( options ) {
+  var order_uuid = options.uuid
+  return this.getPrivateRequest("user/orders/"+order_uuid)
+
+}
+
+Paymium.prototype.Balance  = function(){
+  return this.getPrivateRequest("user")
+}
+
+Paymium.prototype.BuyAtMarketAndCheck = function(amount, pair){
+
+  var tx = null
+  var order_req = { amount_eur:amount }
+  return this.marketBuyEurBased( order_req )
+    .then( (o) => {
+       var txid=o.uuid
+       var check = () => new Promise( ( resolve, reject) => {
+        setTimeout(() =>{
+          this.getOrderStatus(o)
+            .then((order) =>{
+              console.log("state ", order.state)
+              if(order.state === "filled")
+                return Promise.resolve(o)
+
+            })
+            .catch(e => console.log('ERRR ', e))
+        }, 1500)
+    
+      })
+       return check()
+      })
+    .catch(e =>{
+      console.log('err ', e)
+      return Promise.reject("ERRR buy",e)
+      
+    })
+
+
+}
 
 module.exports = Paymium
