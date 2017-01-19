@@ -60,8 +60,12 @@ Paymium.prototype.privateRequest = function (method, endpoint, params){
       
       return Promise.resolve(res) }))
     .catch((err => { 
-      
-      return Promise.reject(err) }))
+      var e = null
+      if ( err.message != null)
+        e = err.message
+      else
+        e = err
+      return Promise.reject(err.message) }))
 
 }
 
@@ -135,24 +139,19 @@ Paymium.prototype.BuyAtMarketAndCheck = function(amount, pair){
         setTimeout(() =>{
           this.getOrderStatus(o)
             .then((order) =>{
-              console.log("state ", order.state)
               if(order.state === "filled"){
                 tx=order
                 return resolve(o)
               }
             })
-            .catch(e => console.log('ERRR ', e))
+            .catch(e => reject (e))
         }, 1500)
     
       })
        return check().then((x=> Promise.resolve(tx)))
       })
     .catch(e =>{
-      if ( e.message)
-        err = e.message
-      else
-        err = e
-      return Promise.reject("Error Paymium BuyAtMarketAndCheck buy",err)
+      return Promise.reject("Error Paymium BuyAtMarketAndCheck buy " + e)
       
     })
 
