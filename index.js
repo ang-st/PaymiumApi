@@ -148,8 +148,11 @@ Paymium.prototype.BuyAtMarketAndCheck = function(amount, pair){
        return check().then((x=> Promise.resolve(tx)))
       })
     .catch(e =>{
-      console.log('err ', e)
-      return Promise.reject("ERRR buy",e)
+      if ( e.message)
+        err = e.message
+      else
+        err = e
+      return Promise.reject("Error Paymium BuyAtMarketAndCheck buy",e)
       
     })
 
