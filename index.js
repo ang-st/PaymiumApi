@@ -152,7 +152,7 @@ Paymium.prototype.BuyAtMarketAndCheck = function(amount, pair){
         err = e.message
       else
         err = e
-      return Promise.reject("Error Paymium BuyAtMarketAndCheck buy",e)
+      return Promise.reject("Error Paymium BuyAtMarketAndCheck buy",err)
       
     })
 
