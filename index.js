@@ -136,15 +136,16 @@ Paymium.prototype.BuyAtMarketAndCheck = function(amount, pair){
           this.getOrderStatus(o)
             .then((order) =>{
               console.log("state ", order.state)
-              if(order.state === "filled")
-                return Promise.resolve(o)
-
+              if(order.state === "filled"){
+                tx=order
+                return resolve(o)
+              }
             })
             .catch(e => console.log('ERRR ', e))
         }, 1500)
     
       })
-       return check()
+       return check().then((x=> Promise.resolve(tx)))
       })
     .catch(e =>{
       console.log('err ', e)
