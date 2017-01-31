@@ -3,8 +3,8 @@ const querystring = require("querystring")
 const crypto = require('crypto')
 
 //rp.debug = true
-//const BASEURL='https://paymium.com/api/v1/'
-const BASEURL='https://sandbox.paymium.com/api/v1/'
+const BASEURL='https://paymium.com/api/v1/
+//const BASEURL='https://sandbox.paymium.com/api/v1/'
 
 function Paymium(apiKey, apiSecret){
   this.apiKey = apiKey || ''
