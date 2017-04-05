@@ -115,6 +115,7 @@ Paymium.prototype.Balance = function () {
 Paymium.prototype.CheckMarketOrder = function (order) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
+      console.log('CheckMarketOrder')
       this.getOrderStatus(order)
             .then((o) => {
               if (o.state === 'filled') {
@@ -129,6 +130,7 @@ Paymium.prototype.getLastexecutedOrder = function (errcount) {
   errcount = errcount || 0
   let self = this
   return this.accountHistory({limit: 2}).then(x => {
+    console.log('getLastexecutedOrder', x[0])
     return Promise.resolve(x[0])
   })
    .catch(e => {
@@ -146,6 +148,7 @@ Paymium.prototype.BuyAtMarketAndCheck = function (amount, pair) {
     return this.marketBuyEurBased(order_req)
       .catch(e => {
         if (e.toString().indexOf('401 - undefined') > 0) {
+          console.log('Buy ANd Check 401')
           return self.getLastexecutedOrder()
         } else {
           return Promise.reject(e)
