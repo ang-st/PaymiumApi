@@ -147,7 +147,7 @@ Paymium.prototype.BuyAtMarketAndCheck = function (amount, pair) {
     console.log(last.uuid)
     return this.marketBuyEurBased(order_req)
       .catch(e => {
-        if (e.toString().indexOf('401 - undefined') > 0) {
+        if (e.toString().indexOf('401 - undefined') > -1) {
           console.log('Buy ANd Check 401')
           return self.getLastexecutedOrder()
         } else {
